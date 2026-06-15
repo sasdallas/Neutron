@@ -1,0 +1,28 @@
+OBJ_DIR = obj/
+
+mkfile_path := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+
+# Source files
+C_SRCS = $(shell find neutron -name "*.c" -type f)
+C_OBJS = $(addprefix $(OBJ_DIR)/,$(C_SRCS:.c=.o))
+
+CFLAGS = -O2 -Iinclude/ -g -fPIC -DBUILDING_LINUX
+CFLAGS += $(shell pkg-config --cflags freetype2)
+
+CC ?= gcc
+
+$(OBJ_DIR)/%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+libneutron.so: $(C_OBJS)
+	$(CC) -shared $(CFLAGS) -o $@ $(C_OBJS) -lX11 -lXrender $(shell pkg-config --libs freetype2) -lm
+
+.PHONY: DEMO
+DEMO:
+	make -C demo
+
+all: libneutron.so DEMO
+
+clean:
+	-rm $(C_OBJS)
+	rm libneutron.so

@@ -1,0 +1,5 @@
+obj/
+taskbar/
+file_browser/
+.vscode/
+libneutron.so
