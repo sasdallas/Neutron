@@ -2,6 +2,12 @@
 
 A GUI framework designed for Ethereal.
 
+![Demo 1](pictures/demo1.png)
+
+![Demo 2](pictures/demo2.png)
+
+![Demo 3](pictures/demo3.png)
+
 ## Warning
 
 Neutron's code is NOT designed to be pretty. There are many hacks, its overall slow, etc.
