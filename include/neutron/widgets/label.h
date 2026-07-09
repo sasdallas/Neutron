@@ -18,11 +18,13 @@
 typedef struct _nt_widget_label {
     struct _nt_widget widget;
     char *text;
-    nt_font_handle_t *font;    
+    nt_font_handle_t *font;
+    bool glow;    
 } nt_label_t;
 
 nt_widget_t *nt_label_create(char *text);
 void nt_label_set_text(nt_widget_t *w, char *text);
 char *nt_label_get_text(nt_widget_t *w);
+void nt_label_set_glow(nt_widget_t *w, bool glow);
 
 #endif

@@ -112,6 +112,7 @@ void nt_window_update(nt_window_t *window) {
 void nt_window_set_root(nt_window_t *window, nt_widget_t *root) {
     window->root_frame = root;
     root->window = window;
+    root->flags |= NT_WIDGET_RENDER_EXACT;
     nt_style_set_margin_all(&root->style, 0);
 }
 

@@ -43,6 +43,8 @@ int nt_platform_create_window(nt_window_t *window) {
     celestial_setHandler(win, CELESTIAL_EVENT_MOUSE_SCROLL, nt_platform_event_handler);
     celestial_setHandler(win, CELESTIAL_EVENT_WINDOW_CLOSE, nt_platform_event_handler);
 
+    celestial_setResizeEnabled(win, true);
+
     win->d = window;
     window->platform = win;
     return 0;
@@ -70,6 +72,14 @@ int nt_platform_create_window_undecorated(nt_window_t *window) {
     return 0;
 }
 
+int nt_platform_set_window_transparent(nt_window_t *window) {
+    window_t *w = (window_t*)window->platform;
+    gfx_context_t *ctx = celestial_getGraphicsContext(w);
+    gfx_clear(ctx, GFX_RGBA(0,0,0,0));
+    gfx_render(ctx);
+    celestial_flip(w);
+    return 0;
+}
 
 int nt_platform_create_child_window(nt_window_t *window) {
     return nt_platform_create_window(window);
@@ -114,10 +124,19 @@ void nt_platform_set_cursor(nt_window_t *window, nt_platform_cursor_t cur) {
     celestial_setMouseCursor(cur_mappings[cur]);
 }
 
+
+void nt_platform_get_display_size(int *width, int *height) {
+    celestial_info_t *info = celestial_getServerInformation();
+
+    *width = info->screen_width;
+    *height = info->screen_height;
+    free(info);
+}
+
 /* rendering functions */
 
 void nt_platform_set_clip(nt_window_t *window, nt_clip_t *clip) {
-    // 
+    // TODO
 }
 
 void nt_platform_flip(nt_window_t *window) {
@@ -139,7 +158,7 @@ void nt_platform_blit_surface(nt_window_t *window, struct _nt_render_surface *su
     sprite_t sp = {
         .width = surface->width,
         .height = surface->height,
-        .alpha = SPRITE_ALPHA_BLEND,
+        .alpha = (surface->exact) ? SPRITE_ALPHA_SOLID : SPRITE_ALPHA_BLEND,
         .bitmap = (uint32_t*)surface->buffer
     };
 
@@ -235,6 +254,16 @@ void nt_platform_event_handler(window_t *win, uint32_t event_type, void *event) 
         }
     } else if (event_type == CELESTIAL_EVENT_WINDOW_CLOSE) {
         nt_window_closed((nt_window_t*)win->d);
+    } else if (event_type == CELESTIAL_EVENT_RESIZE) {
+        nt_window_t *nwin = win->d;
+        nwin->width = win->width;
+        nwin->height = win->height;
+        nt_widget_mark_recalc(nwin->root_frame);
+
+
+        if (nwin->root_frame) {
+            nt_window_update(nwin);
+        }
     } 
 }
 

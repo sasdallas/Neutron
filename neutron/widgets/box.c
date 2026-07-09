@@ -142,8 +142,8 @@ void nt_box_adjust_size(nt_widget_t *widget) {
 
 static void nt_box_render(nt_widget_t *w, nt_render_surface_t *surf) {
     if (w->selected) {
-        nt_render_rounded_rect_gradient(surf, &NT_RECT(0,0,nt_widget_get_width_inner(w), nt_widget_get_height_inner(w)-1), 4, NT_COLOR(0x5d,0xa3,0xec,255), NT_COLOR(0x39, 0x87, 0xe4, 255), false);
-        nt_render_border_rounded_rect(surf, &NT_RECT(0,0,nt_widget_get_width_inner(w),nt_widget_get_height_inner(w)-1), 1, 4, NT_COLOR(0x46,0x90,0xd0,255)); 
+        nt_render_rounded_rect_gradient(surf, &NT_RECT(w->style.padding[LEFT],0,nt_widget_get_width_inner(w), nt_widget_get_height_inner(w)-1), 4, NT_COLOR(0x5d,0xa3,0xec,255), NT_COLOR(0x39, 0x87, 0xe4, 255), false);
+        nt_render_border_rounded_rect(surf, &NT_RECT(w->style.padding[LEFT],0,nt_widget_get_width_inner(w),nt_widget_get_height_inner(w)-1), 1, 4, NT_COLOR(0x46,0x90,0xd0,255)); 
     }
 }
 

@@ -26,3 +26,8 @@ all: libneutron.so DEMO
 clean:
 	-rm $(C_OBJS)
 	rm libneutron.so
+
+install:
+	cp -r resources $(DESTDIR)/usr/share/
+	cp libneutron.so $(DESTDIR)/usr/lib/
+	

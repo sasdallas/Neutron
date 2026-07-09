@@ -26,6 +26,7 @@ typedef struct _nt_render_surface {
     size_t height;
     char *buffer;
     void *platform;
+    bool exact;
 } nt_render_surface_t;
 
 typedef enum nt_font_type {
@@ -36,7 +37,11 @@ typedef enum nt_font_type {
     NT_NFONTS
 } nt_font_type_t;
 
-typedef void nt_font_handle_t;
+typedef struct _nt_font_handle {
+    void *face;
+    int type;
+} nt_font_handle_t;
+\
 
 typedef struct _nt_image {
     unsigned int *bitmap;
@@ -69,7 +74,11 @@ void nt_render_rounded_rect_gradient(nt_render_surface_t *surface, nt_rect_t *re
 nt_font_handle_t *nt_render_load_font(nt_font_type_t type);
 void nt_render_draw_text(nt_render_surface_t *surface, nt_font_handle_t *font, unsigned x, unsigned y, const char *text, nt_color_t color);
 void nt_render_text_dimensions(nt_font_handle_t *font, const char *text, size_t *w, size_t *h);
+void nt_render_text_dimensions_glow(nt_font_handle_t *font, const char *text, size_t *w, size_t *h, int radius);
 void nt_render_free_font(nt_font_handle_t *font);
+void nt_render_draw_text_stroke(nt_render_surface_t *surface, nt_font_handle_t *fonth, 
+                                unsigned x, unsigned y, const char *text, 
+                                nt_color_t text_color, nt_color_t stroke_color, int stroke_radius);
 
 /* image */
 int nt_render_create_image(nt_image_t *image, char *filename);

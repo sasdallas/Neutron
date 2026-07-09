@@ -408,6 +408,15 @@ void nt_platform_set_window_visible(nt_window_t *window, bool visible) {
     XFlush(display);
 }
 
+int nt_platform_set_window_transparent(struct _nt_window *window) {
+    return 0;
+}
+
+void nt_platform_get_display_size(int *width, int *height) {
+    *width = XDisplayWidth(display, screen);
+    *height = XDisplayHeight(display, screen);
+}
+
 typedef struct x11_surf {
     Picture pic;
     Pixmap pixmap;
@@ -444,7 +453,7 @@ void nt_platform_blit_surface(struct _nt_window *window, struct _nt_render_surfa
 
     XPutImage(display, xsurf->pixmap, xsurf->gc, xsurf->image, 0, 0, 0, 0, surface->width, surface->height);
 
-    XRenderComposite(display, PictOpOver, xsurf->pic, None, xwin->picture,
+    XRenderComposite(display, (surface->exact) ? PictOpSrc : PictOpOver, xsurf->pic, None, xwin->picture,
         0, 0,
         0, 0,
         x, y,

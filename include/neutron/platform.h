@@ -41,6 +41,8 @@ struct _nt_render_surface;
 int nt_platform_create_window(struct _nt_window *window);
 int nt_platform_create_child_window(struct _nt_window *window);
 int nt_platform_create_window_undecorated(struct _nt_window *window);
+int nt_platform_set_window_transparent(struct _nt_window *window);
+void nt_platform_get_display_size(int *width, int *height);
 void nt_platform_get_window_pos(struct _nt_window *window, int *x, int *y);
 void nt_platform_set_window_pos(struct _nt_window *window, int x, int y);
 int nt_platform_destroy_window(struct _nt_window *window);

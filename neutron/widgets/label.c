@@ -25,7 +25,12 @@ static void nt_label_calc_size(nt_widget_t *widget) {
 
     size_t w;
     size_t h;
-    nt_render_text_dimensions(widget->style.font, label->text, &w, &h);
+
+    if (label->glow) {
+        nt_render_text_dimensions_glow(widget->style.font, label->text, &w, &h, 1);
+    } else {
+        nt_render_text_dimensions(widget->style.font, label->text, &w, &h);
+    }
 
     widget->size_data.pref_width = w;
     widget->size_data.pref_height = h;
@@ -36,10 +41,18 @@ static void nt_label_calc_size(nt_widget_t *widget) {
 static void nt_label_render(nt_widget_t *widget, nt_render_surface_t *surface) {
     nt_label_t *label = (nt_label_t*)widget;
 
-    nt_render_draw_text(surface, widget->style.font,
-        widget->style.padding[LEFT],
-        widget->style.padding[TOP],
-        label->text, NT_COLOR_INVERT_IF_SELECTED(widget, widget->style.fg));
+    if (label->glow) {
+        nt_render_draw_text_stroke(surface, widget->style.font,
+            widget->style.padding[LEFT],
+            widget->style.padding[TOP],
+            label->text, NT_COLOR_INVERT_IF_SELECTED(widget, widget->style.fg),
+            NT_COLOR(0,0,0,255), 1);
+    } else {
+        nt_render_draw_text(surface, widget->style.font,
+            widget->style.padding[LEFT],
+            widget->style.padding[TOP],
+            label->text, NT_COLOR_INVERT_IF_SELECTED(widget, widget->style.fg));
+    }
 }
 
 nt_widget_vtable_t label_vtable = {
@@ -74,4 +87,10 @@ void nt_label_set_text(nt_widget_t *w, char *text) {
 char *nt_label_get_text(nt_widget_t *w) {
     nt_label_t *lbl = (nt_label_t*)w;
     return lbl->text;
+}
+
+void nt_label_set_glow(nt_widget_t *w, bool glow) {
+    nt_label_t *lbl = (nt_label_t*)w;
+    lbl->glow = glow;
+    nt_widget_mark_recalc(w);
 }

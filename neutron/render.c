@@ -26,6 +26,7 @@ void nt_render_init_surface(nt_window_t *window, nt_render_surface_t *surface, s
     surface->height = height;
     surface->buffer = malloc(width * height * 4);
     surface->initialized = true;
+    surface->exact = false;
     nt_platform_init_surface(window, surface, width, height);
 }
 

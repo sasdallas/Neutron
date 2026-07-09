@@ -50,6 +50,8 @@ typedef struct _nt_style {
         int thickness; // 0 = no border
     } border;
 
+    bool select_inverts;
+
     size_t suggested_width; // if pref_width is less than this it will be set to this
     size_t suggested_height; // if pref_height is less than this it will be set to this
     size_t maximum_width; // if pref_width is greater than this it will be set to this
@@ -63,7 +65,7 @@ typedef struct _nt_style {
 #define NT_COLOR_G(color) (((color) & 0x0000FF00) / 0x100)
 #define NT_COLOR_B(color) (((color) & 0x000000FF))
 
-#define NT_COLOR_INVERT_IF_SELECTED(w, c) (((w)->selected ? (~((uint32_t)(c) & 0xFFFFFF) | NT_COLOR_A(c)) : (c)))
+#define NT_COLOR_INVERT_IF_SELECTED(w, c) ((((w)->selected && (w)->style.select_inverts) ? (~((uint32_t)(c) & 0xFFFFFF) | NT_COLOR_A(c)) : (c)))
 
 void nt_style_init(nt_style_t *style);
 void nt_style_set_font(nt_style_t *style, int type);
@@ -78,6 +80,7 @@ static inline void nt_style_set_suggested_width(nt_style_t *style, size_t sug_wi
 static inline void nt_style_set_suggested_height(nt_style_t *style, size_t sug_height) { style->suggested_height = sug_height; }
 static inline void nt_style_set_maximum_width(nt_style_t *style, size_t max_width) { style->maximum_width = max_width; }
 static inline void nt_style_set_maximum_height(nt_style_t *style, size_t max_height) { style->maximum_height = max_height; }
+static inline void nt_style_set_select_invert(nt_style_t *style, bool inv) { style->select_inverts = inv; }
 
 
 // set to 0 to disable border

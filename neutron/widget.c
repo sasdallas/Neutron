@@ -324,6 +324,10 @@ void nt_widget_adjust_size(nt_widget_t *widget, nt_rect_t *region) {
     nt_render_deinit_surface(&widget->surf);
     nt_render_init_surface(nt_widget_get_window(widget), &widget->surf, width, height);
 
+    if (widget->flags & NT_WIDGET_RENDER_EXACT) {
+        widget->surf.exact = true;
+    }
+    
     if (widget->vtbl->adjust_size) {
         widget->vtbl->adjust_size(widget);
     }
@@ -428,7 +432,6 @@ extern nt_widget_t *last_hovered_widget;
 
 void nt_widget_set_selected(nt_widget_t *widget, bool selected) {
     if ((widget->flags & NT_WIDGET_SELECTABLE) == 0) return;
-    NT_DEBUG("nt_widget_set_selected type=%d\n", widget->type); 
     widget->selected = selected;
 
     // create event

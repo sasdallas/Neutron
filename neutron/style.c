@@ -27,6 +27,7 @@ nt_style_t default_style = {
         .gradient = NT_BORDER_GRADIENT_NONE,
         .rounded = 0,
     },
+    .select_inverts = true,
     .suggested_width = 0,
     .suggested_height = 0,
     .maximum_width = SIZE_MAX,

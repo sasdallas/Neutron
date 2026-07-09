@@ -69,6 +69,7 @@ typedef enum _nt_alignment {
 #define NT_WIDGET_MOUSE_INVAL   0x8     // Invalidate the widget on mouse enter/leave/click/release
 #define NT_WIDGET_INVIS         0x10    // Invisible widget
 #define NT_WIDGET_SELECTABLE    0x20    // This widget is selectable
+#define NT_WIDGET_RENDER_EXACT  0x40    // This widget is rendered without alpha blending
 
 struct _nt_widget;
 struct _nt_render_surface;
@@ -185,22 +186,22 @@ static inline void nt_widget_set_vertical_alignment(nt_widget_t *widget, nt_alig
     widget->layout.valign = align;
 }
 
-// return the X of the widget with margin
+// return the X of the widget with padding
 static inline int nt_widget_get_x_inner(nt_widget_t *widget) {
     return widget->layout_data.x + widget->style.padding[LEFT];
 }
 
-// return the Y of the widget with margin
+// return the Y of the widget with padding
 static inline int nt_widget_get_y_inner(nt_widget_t *widget) {
     return widget->layout_data.y + widget->style.padding[TOP];
 }
 
-// returns the width of the widget minus margin
+// returns the width of the widget minus padding
 static inline int nt_widget_get_width_inner(nt_widget_t *widget) {
     return widget->layout_data.w - widget->style.padding[RIGHT] - widget->style.padding[LEFT];
 }
 
-// returns the height of the widget minus margin
+// returns the height of the widget minus padding
 static inline int nt_widget_get_height_inner(nt_widget_t *widget) {
     return widget->layout_data.h - widget->style.padding[BOTTOM] - widget->style.padding[TOP];
 }
