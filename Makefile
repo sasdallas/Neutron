@@ -21,7 +21,7 @@ libneutron.so: $(C_OBJS)
 DEMO:
 	make -C demo
 
-all: libneutron.so DEMO
+all: libneutron.so
 
 clean:
 	-rm $(C_OBJS)

@@ -1,0 +1,8 @@
+# demo makefile
+
+CC ?= x86_64-ethereal-gcc
+
+all:
+	$(CC) -o $(DESTDIR)/usr/bin/neutron_demo demo.c -g -lneutron -lgraphics -lstructures -lethereal $(shell pkg-config --libs freetype2)
+
+.PHONY: all clean
