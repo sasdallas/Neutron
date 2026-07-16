@@ -100,7 +100,15 @@ int nt_platform_destroy_window(nt_window_t *window) {
 }
 
 void nt_platform_check_events(nt_window_t *window) {
-    celestial_poll((window_t*)window->platform);   
+    celestial_poll();   
+}
+
+int nt_platform_wait_events(int timeout) {
+    // celestial doesnt really have the concept of software event handling
+    // so this will actually already process the events
+    // have to return 1 though so it calls nt_window_update()
+    celestial_pollTimeout(timeout);
+    return 1;
 }
 
 void nt_platform_resize_window(nt_window_t *window, int w, int h) {

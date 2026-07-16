@@ -20,6 +20,9 @@
 #include <X11/Xft/Xft.h>
 #include <X11/Xatom.h>
 #include <X11/cursorfont.h>
+#include <errno.h>
+#include <poll.h>
+
 
 bool nt_platform_xkeyevent_to_event(XKeyEvent *xkey, bool pressed, nt_event_t *event);
 
@@ -273,6 +276,20 @@ void nt_platform_set_cursor(struct _nt_window *window, nt_platform_cursor_t cur)
 
 XMotionEvent last_motion = { 0 };
 bool have_motion = false;
+
+int nt_platform_wait_events(int timeout) {
+    int fd = ConnectionNumber(display);
+
+    struct pollfd pfd = { .fd = fd, .events = POLLIN, .revents = 0 };
+    int r = poll(&pfd, 1, timeout);
+
+    if (r < 0) {
+        NT_WARN("poll failed: %s\n", strerror(errno));
+        return 0;
+    }
+
+    return !!(pfd.revents & POLLIN);
+}
 
 void nt_platform_check_events(struct _nt_window *window) {
     while (XPending(display)) {

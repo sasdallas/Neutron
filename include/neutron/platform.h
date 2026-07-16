@@ -46,7 +46,8 @@ void nt_platform_get_display_size(int *width, int *height);
 void nt_platform_get_window_pos(struct _nt_window *window, int *x, int *y);
 void nt_platform_set_window_pos(struct _nt_window *window, int x, int y);
 int nt_platform_destroy_window(struct _nt_window *window);
-void nt_platform_check_events(struct _nt_window *window);
+void nt_platform_check_events(struct _nt_window *window); // checks for an event once
+int nt_platform_wait_events(int timeout); // waits for an event on any windows with timeout, returns 1 if an event happened
 void nt_platform_resize_window(struct _nt_window *window, int w, int h);
 void nt_platform_set_window_visible(struct _nt_window *window, bool visible);
 

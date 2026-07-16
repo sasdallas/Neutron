@@ -63,7 +63,6 @@ void nt_timer_update() {
     nt_timer_t *timer = timer_head;
     while (timer) {
         if (timer->enabled && now >= timer->next_period) {
-            
             bool res = timer->callback(timer, timer->data);
             if (res) {
                 // arm timer
@@ -82,3 +81,30 @@ void nt_timer_update() {
 }
 
 nt_timer_t *nt_timer_get_list() { return timer_head; }
+
+int nt_timer_next_expiration() {
+    if (!timer_head) return -1;
+    unsigned long long now = nt_timer_get_ms();
+
+    unsigned int expiration = UINT32_MAX;
+    bool have_expire = false;
+
+    nt_timer_t *timer = timer_head;
+    while (timer) {
+        if (timer->enabled) {
+            if (timer->next_period < now) {
+                return 0;
+            }
+
+            if (timer->next_period - now < expiration) {
+                expiration = timer->next_period - now; 
+                have_expire = true;;
+            }       
+        } 
+
+        timer = timer->next;
+    }
+
+    if (!have_expire) return -1;
+    return expiration;
+}

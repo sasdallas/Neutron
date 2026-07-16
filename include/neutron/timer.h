@@ -36,6 +36,7 @@ void nt_timer_delete(nt_timer_t *timer);
 void nt_timer_reset(nt_timer_t *timer);
 void nt_timer_update();
 nt_timer_t *nt_timer_get_list();
+int nt_timer_next_expiration();
 
 static inline void nt_timer_set_enabled(nt_timer_t *timer, bool enabled) {
     timer->enabled = enabled;

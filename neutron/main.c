@@ -29,23 +29,38 @@ int nt_init() {
     return 0;
 }
 
+#define HAS_UPDATE(win) (win->root_frame && win->root_frame->flags & (NT_WIDGET_NEED_RECALC | NT_WIDGET_DIRTY))
+
 void nt_loop() {
     while (1) {
         nt_timer_update();
-        
-        NT_ITERATE_WINDOWS(win) {
-            nt_platform_check_events(win);
-            nt_window_update(win);
+
+        int expiration = nt_timer_next_expiration();
+        if (expiration > 0) {
+            expiration = expiration + 50;
+            if (expiration < 0) expiration = 0;
         }
 
+        NT_ITERATE_WINDOWS(win) {
+            nt_platform_check_events(win);
+            while (HAS_UPDATE(win)) nt_window_update(win);
+        }
+
+        nt_platform_wait_events(expiration);
         if (!nt_window_list()) break;
     }
 }
 
 void nt_loop_until_exited(nt_window_t *win) {
     while (win->exited == false) {
+        // To avoid wasting CPU time this is necessary
         nt_timer_update();
-        nt_window_update(win);
+        while (HAS_UPDATE(win)) {
+            nt_window_update(win);
+        }
+
+        int expiration = nt_timer_next_expiration();
+        nt_platform_wait_events(expiration);
         nt_platform_check_events(win);
     }
 
