@@ -84,5 +84,6 @@ void nt_render_draw_text_stroke(nt_render_surface_t *surface, nt_font_handle_t *
 int nt_render_create_image(nt_image_t *image, char *filename);
 int nt_render_free_image(nt_image_t *image);
 void nt_render_draw_image(nt_render_surface_t *surface, nt_image_t *image, unsigned x, unsigned y);
+void nt_render_draw_image_scaled(nt_render_surface_t *surf, nt_image_t *img, nt_rect_t rect);
 
 #endif

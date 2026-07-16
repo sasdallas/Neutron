@@ -107,3 +107,66 @@ void nt_render_draw_image(nt_render_surface_t *surf, nt_image_t *img, unsigned x
         }
     }
 }
+
+
+void nt_render_draw_image_scaled(nt_render_surface_t *surf, nt_image_t *img, nt_rect_t rect) {
+    if (rect.w <= 0 || rect.h <= 0) return;
+
+    uint8_t *dst = (uint8_t *)surf->buffer;
+    uint8_t *src = (uint8_t *)img->bitmap;
+    int pitch = surf->width * 4;
+
+    for (int dy = 0; dy < rect.h; ++dy) {
+        int dest_y = rect.y + dy;
+        if (dest_y < 0 || dest_y >= surf->height) continue;
+
+        int sy = (dy * img->height) / rect.h;
+        if (sy >= img->height) sy = img->height - 1;
+
+        uint8_t *drow = dst + (dest_y * pitch);
+        uint8_t *srow = src + (sy * img->width * img->nchannels);
+
+        for (int dx = 0; dx < rect.w; ++dx) {
+            int dest_x = rect.x + dx;
+            if (dest_x < 0 || dest_x >= surf->width) continue;
+
+            // nearest neighbor, bilinear is todo
+            int sx = (dx * img->width) / rect.w;
+            if (sx >= img->width) sx = img->width - 1;
+
+            uint8_t r = 0, g = 0, b = 0, a = 255;
+
+            switch (img->nchannels) {
+                case 4:
+                    b = srow[sx * 4 + 0];
+                    g = srow[sx * 4 + 1];
+                    r = srow[sx * 4 + 2];
+                    a = srow[sx * 4 + 3];
+                    break;
+                case 3:
+                    b = srow[sx * 3 + 0];
+                    g = srow[sx * 3 + 1];
+                    r = srow[sx * 3 + 2];
+                    break;
+                case 2:
+                    r = g = b = srow[sx * 2 + 0];
+                    a = srow[sx * 2 + 1];
+                    break;
+                case 1:
+                    r = g = b = srow[sx];
+                    break;
+                default:
+                    break;
+            }
+
+            // Premultiply Alpha
+            r = (r * a) / 255;
+            g = (g * a) / 255;
+            b = (b * a) / 255;
+
+            nt_color_t *dst_pixel = (nt_color_t*)&drow[dest_x * 4];
+            uint32_t src_pixel = NT_COLOR(b, g, r, a);
+            *dst_pixel = blend(src_pixel, *dst_pixel);
+        }
+    }
+}

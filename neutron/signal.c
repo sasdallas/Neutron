@@ -33,7 +33,6 @@ void nt_signal_emit(nt_widget_t *widget, nt_signal_t *signal) {
 
 
 void nt_signal_emit_name_data(struct _nt_widget *widget, char *signal, void *sig_data) {
-    printf("nt_signal_emit_name %p %s\n", widget, signal);
     nt_signal_t *sig = widget->signal_head;
     while (sig) {
         // TODO: optimize
