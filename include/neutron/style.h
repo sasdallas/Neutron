@@ -25,9 +25,9 @@ typedef unsigned int nt_color_t;
 #define BOTTOM 3
 #define NDIR 4
 
-#define NT_BORDER_GRADIENT_NONE 0
-#define NT_BORDER_GRADIENT_HORIZ 1
-#define NT_BORDER_GRADIENT_VERT 2
+#define NT_STYLE_GRADIENT_NONE 0
+#define NT_STYLE_GRADIENT_HORIZ 1
+#define NT_STYLE_GRADIENT_VERT 2
 
 struct _nt_render_surface;
 struct _nt_font_handle;
@@ -36,7 +36,13 @@ enum nt_font_type;
 
 typedef struct _nt_style {
     nt_color_t fg;
-    nt_color_t bg;
+
+    struct {
+        unsigned char rounded;
+        unsigned char gradient;
+        nt_color_t top;
+        nt_color_t bot;
+    } background;
 
     struct _nt_font_handle *font;
     size_t margin[NDIR];
@@ -71,7 +77,6 @@ void nt_style_init(nt_style_t *style);
 void nt_style_set_font(nt_style_t *style, int type);
 void nt_style_draw_bg(struct _nt_widget *widget, struct _nt_render_surface *surf);
 static inline void nt_style_set_fg_color(nt_style_t *style, nt_color_t color) { style->fg = color; }
-static inline void nt_style_set_bg_color(nt_style_t *style, nt_color_t color) { style->bg = color; }
 static inline void nt_style_set_margin(nt_style_t *style, int dir, size_t pad) { style->margin[dir] = pad; }
 static inline void nt_style_set_margin_all(nt_style_t *style, size_t pad) { style->margin[0] = pad; style->margin[1] = pad; style->margin[2] = pad; style->margin[3] = pad; }
 static inline void nt_style_set_padding(nt_style_t *style, int dir, size_t pad) { style->padding[dir] = pad; }
@@ -82,6 +87,22 @@ static inline void nt_style_set_maximum_width(nt_style_t *style, size_t max_widt
 static inline void nt_style_set_maximum_height(nt_style_t *style, size_t max_height) { style->maximum_height = max_height; }
 static inline void nt_style_set_select_invert(nt_style_t *style, bool inv) { style->select_inverts = inv; }
 
+static inline void nt_style_set_bg_rounded(nt_style_t *style, unsigned char radius) {
+    style->background.rounded = radius;
+}
+
+static inline void nt_style_set_bg_gradient(nt_style_t *style, int gradient) {
+    style->background.gradient = gradient;
+}
+
+static inline void nt_style_set_bg_gradient_colors(nt_style_t *style, nt_color_t start, nt_color_t finish) {
+    style->background.top = start;
+    style->background.bot = finish;    
+}
+
+static inline void nt_style_set_bg_color(nt_style_t *style, nt_color_t color) {
+    style->background.top = color;
+}
 
 // set to 0 to disable border
 static inline void nt_style_set_border_thickness(nt_style_t *style, int thickness) {

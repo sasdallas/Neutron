@@ -27,6 +27,7 @@
 #include <neutron/keycodes.h>
 #include <neutron/dialog.h>
 #include <neutron/icon.h>
+#include <neutron/fade.h>
 #include <neutron/widgets/label.h>
 #include <neutron/widgets/box.h>
 #include <neutron/widgets/grid.h>

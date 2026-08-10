@@ -31,6 +31,7 @@ typedef struct _nt_timer {
 #define NT_TIMER_ENABLED true
 #define NT_TIMER_DISABLED false
 
+unsigned long long nt_timer_get_ms();
 nt_timer_t *nt_timer_create(long ms, nt_timer_callback_t callback, void *data, bool enabled);
 void nt_timer_delete(nt_timer_t *timer);
 void nt_timer_reset(nt_timer_t *timer);

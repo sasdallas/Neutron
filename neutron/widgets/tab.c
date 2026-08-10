@@ -67,8 +67,8 @@ static void nt_tab_render(nt_widget_t *widget, nt_render_surface_t *surface) {
 
     if (tab->state == NT_TAB_STATE_ACTIVE) {
         border = NT_COLOR(0xb9, 0xb9, 0xb9, 0xff);
-        inner_top = tab->content->style.bg;
-        inner_bottom = tab->content->style.bg;
+        inner_top = tab->content->style.background.top;
+        inner_bottom = tab->content->style.background.top;
     } else if (tab->state == NT_TAB_STATE_HOVERED) {
         // more windows 7-like
         // border = NT_COLOR(0x6f, 0xa6, 0xd0, 0xff);

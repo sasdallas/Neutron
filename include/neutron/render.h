@@ -32,8 +32,10 @@ typedef struct _nt_render_surface {
 typedef enum nt_font_type {
     NT_SANS_10,
     NT_SANS_12,
+    NT_SANS_16,
     NT_SANS_BOLD_10,
     NT_SANS_BOLD_12,
+    NT_SANS_BOLD_16,
     NT_NFONTS
 } nt_font_type_t;
 

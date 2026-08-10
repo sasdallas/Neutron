@@ -50,6 +50,7 @@ nt_font_handle_t *nt_render_load_font(nt_font_type_t type) {
 
     char *filepath;
     switch (type) {
+        case NT_SANS_16:
         case NT_SANS_12:
         case NT_SANS_10:
             filepath = FONT_DIR "DejaVuSans.ttf";
@@ -57,6 +58,7 @@ nt_font_handle_t *nt_render_load_font(nt_font_type_t type) {
 
         case NT_SANS_BOLD_10:
         case NT_SANS_BOLD_12:
+        case NT_SANS_BOLD_16:
             filepath = FONT_DIR "DejaVuSans-Bold.ttf";
             break;
 
@@ -74,8 +76,20 @@ nt_font_handle_t *nt_render_load_font(nt_font_type_t type) {
     }
 
     switch (type) {
-        case NT_SANS_10: case NT_SANS_BOLD_10: FT_Set_Pixel_Sizes(__nt_fonts[type].face, 10, 10); break;
-        case NT_SANS_12: case NT_SANS_BOLD_12: FT_Set_Pixel_Sizes(__nt_fonts[type].face, 12, 12); break;
+        case NT_SANS_10:
+        case NT_SANS_BOLD_10:
+            FT_Set_Pixel_Sizes(__nt_fonts[type].face, 10, 10);
+            break;
+
+        case NT_SANS_12:
+        case NT_SANS_BOLD_12:
+            FT_Set_Pixel_Sizes(__nt_fonts[type].face, 12, 12);
+            break;
+
+        case NT_SANS_16:
+        case NT_SANS_BOLD_16:
+            FT_Set_Pixel_Sizes(__nt_fonts[type].face, 16, 16);
+            break;
     }
 
     NT_DEBUG("Loaded font %d\n", type);
@@ -171,7 +185,7 @@ static uint8_t *nt_render_create_blur_mask(const uint8_t *src, int src_w, int sr
 }
 
 void nt_render_draw_text_stroke(nt_render_surface_t *surface, nt_font_handle_t *fonth, 
-                                unsigned x, unsigned y, const char *text, 
+                                unsigned x, unsigned y, const char *text,
                                 nt_color_t text_color, nt_color_t glow_color, int glow_radius) {
     char *str = (char*)text;
     FT_Face font = fonth->face;
@@ -179,7 +193,7 @@ void nt_render_draw_text_stroke(nt_render_surface_t *surface, nt_font_handle_t *
     int cur_y = y + (font->size->metrics.ascender >> 6);
 
     int load_flags = FT_LOAD_DEFAULT;
-    if (fonth->type == NT_SANS_BOLD_10 || fonth->type == NT_SANS_BOLD_12) {
+    if (fonth->type == NT_SANS_BOLD_10 || fonth->type == NT_SANS_BOLD_12 || fonth->type == NT_SANS_BOLD_16) {
         load_flags |= FT_LOAD_TARGET_LIGHT;
     } else {
         load_flags |= FT_LOAD_FORCE_AUTOHINT;
@@ -270,8 +284,7 @@ void nt_render_draw_text(nt_render_surface_t *surface, nt_font_handle_t *fonth, 
     int cur_y = y + ((font)->size->metrics.ascender >> 6);
 
     int load_flags = FT_LOAD_DEFAULT;
-    if (fonth->type == NT_SANS_BOLD_10 || fonth->type == NT_SANS_BOLD_12) {
-
+    if (fonth->type == NT_SANS_BOLD_10 || fonth->type == NT_SANS_BOLD_12 || fonth->type == NT_SANS_BOLD_16) {
         load_flags |= FT_LOAD_TARGET_LIGHT;
     } else {
         load_flags |= FT_LOAD_FORCE_AUTOHINT;
@@ -333,7 +346,7 @@ static void nt_render_text_dimensions_inner(nt_font_handle_t *font, const char *
     FT_Face face = (FT_Face)font->face;
 
     int load_flags = FT_LOAD_NO_BITMAP;
-    if (font->type == NT_SANS_BOLD_10 || font->type == NT_SANS_BOLD_12) {
+    if (font->type == NT_SANS_BOLD_10 || font->type == NT_SANS_BOLD_12 || font->type == NT_SANS_BOLD_16) {
         load_flags |= FT_LOAD_TARGET_LIGHT;
     } else {
         load_flags |= FT_LOAD_FORCE_AUTOHINT;

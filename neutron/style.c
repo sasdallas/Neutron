@@ -16,7 +16,12 @@
 
 nt_style_t default_style = {
     .fg = NT_COLOR(0, 0, 0, 255),
-    .bg = NT_COLOR(0xfa, 0xfa, 0xfa, 255),
+    .background = {
+        .top = NT_COLOR(0xFA, 0xFA, 0xFA, 255),
+        .bot = NT_COLOR(0,0,0,0),
+        .rounded = 0,
+        .gradient = NT_STYLE_GRADIENT_NONE
+    },
     .font = NULL,
     .margin = { 8, 8, 8, 8 },
     .padding = { 0, 0, 0, 0 },
@@ -24,7 +29,7 @@ nt_style_t default_style = {
         .thickness = 0,
         .top = NT_COLOR(0,0,0,0),
         .bot = NT_COLOR(0,0,0,0),
-        .gradient = NT_BORDER_GRADIENT_NONE,
+        .gradient = NT_STYLE_GRADIENT_NONE,
         .rounded = 0,
     },
     .select_inverts = true,
@@ -51,16 +56,60 @@ void nt_style_draw_bg(nt_widget_t *widget, nt_render_surface_t *surf) {
     // the bg is very "special" (aka annoying)
     // if the border is rounded we dont want to interfere with it.
     // !!! yes these are some hacks
-    if (NT_COLOR_A(widget->style.bg) == 0) {
-        memset(surf->buffer, 0, surf->width * surf->height * 4);
-        return;
-    }
+        // if (NT_COLOR_A(widget->style.bg) == 0) {
+        //     memset(surf->buffer, 0, surf->width * surf->height * 4);
+        //     return;
+        
+        // }
 
-    if (widget->style.border.thickness && widget->style.border.rounded) {
-        nt_render_clear(&widget->surf, NT_COLOR(0,0,0,0));
-        nt_render_fill_rect(&widget->surf, &NT_RECT(widget->style.padding[LEFT], widget->style.padding[TOP], nt_widget_get_width_inner(widget), nt_widget_get_height_inner(widget)), widget->style.bg);
+        // if (widget->style.border.thickness && widget->style.border.rounded) {
+        //     nt_render_clear(&widget->surf, NT_l_rect(&widget->surf, &NT_RECT(widget-COLOR(0,0,0,0));
+        //     nt_render_fil>style.padding[LEFT], widget->style.padding[TOP], nt_widget_get_width_inner(widget), nt_widget_get_height_inner(widget)), widget->style.bg);
+        // } else {
+        //     nt_render_clear(surf, widget->style.bg);
+        // }
+
+    
+    nt_style_t *style = &widget->style;
+    nt_rect_t r = {
+        .x = widget->style.padding[LEFT],
+        .y = widget->style.padding[RIGHT],
+        .w = nt_widget_get_width_inner(widget),
+        .h = nt_widget_get_height_inner(widget),
+    };
+
+    if (style->background.gradient == NT_STYLE_GRADIENT_NONE) {
+        if (NT_COLOR_A(style->background.top) == 0) {
+            memset(surf->buffer, 0, surf->width * surf->height * 4);
+            return;
+        }
+
+        if (style->background.rounded || (style->border.thickness && style->border.rounded)) {
+            // this is a hack
+            nt_render_clear(&widget->surf, NT_COLOR(0,0,0,0));
+        }
+
+        if (style->background.rounded) {
+            nt_render_rounded_rect(surf, &r, style->background.rounded, style->background.top);
+        } else {
+            nt_render_fill_rect(surf, &r, style->background.top);
+        }
     } else {
-        nt_render_clear(surf, widget->style.bg);
+        if (NT_COLOR_A(style->background.top) == 0 && NT_COLOR_A(style->background.bot) == 0) {
+            memset(surf->buffer, 0, surf->width * surf->height * 4);
+            return;
+        }
+
+        if (style->background.rounded || (style->border.thickness && style->border.rounded)) {
+            // this is a hack
+            nt_render_clear(&widget->surf, NT_COLOR(0,0,0,0));
+        }
+
+        if (style->background.rounded) {
+            nt_render_rounded_rect_gradient(surf, &r, style->background.rounded, style->background.top, style->background.bot, style->background.gradient == NT_STYLE_GRADIENT_HORIZ);
+        } else {
+            nt_render_fill_rect_gradient(surf, &r, style->background.top, style->background.bot, style->background.gradient == NT_STYLE_GRADIENT_HORIZ);
+        }
     }
 }
 
@@ -75,7 +124,7 @@ void nt_style_draw_border(nt_widget_t *w, struct _nt_render_surface *surf) {
         .h = w->layout_data.h,
     };
 
-    if (style->border.gradient == NT_BORDER_GRADIENT_NONE) {
+    if (style->border.gradient == NT_STYLE_GRADIENT_NONE) {
         if (style->border.rounded != 0) {
             nt_render_border_rounded_rect(surf, &border, style->border.thickness, style->border.rounded, style->border.top);
         } else {
@@ -83,7 +132,7 @@ void nt_style_draw_border(nt_widget_t *w, struct _nt_render_surface *surf) {
         }
     } else {
         if (style->border.rounded != 0) {
-            nt_render_border_rounded_rect_gradient(surf, &border, style->border.thickness, style->border.rounded, style->border.top, style->border.bot, (style->border.gradient == NT_BORDER_GRADIENT_HORIZ));
+            nt_render_border_rounded_rect_gradient(surf, &border, style->border.thickness, style->border.rounded, style->border.top, style->border.bot, (style->border.gradient == NT_STYLE_GRADIENT_HORIZ));
         } else {
             assert(0 && "Non-rounded gradient not supported");
         }

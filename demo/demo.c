@@ -305,7 +305,7 @@ static nt_widget_t *create_column_view_tab() {
     nt_style_set_padding_all(&column_view->style, 2);
     nt_style_set_border_thickness(&column_view->style, 1);
     nt_style_set_border_color(&column_view->style, NT_COLOR(170,170,170,255));
-    nt_style_set_border_gradient(&column_view->style, NT_BORDER_GRADIENT_NONE);
+    nt_style_set_border_gradient(&column_view->style, NT_STYLE_GRADIENT_NONE);
     nt_style_set_border_rounded(&column_view->style, 2);
     
     nt_widget_set_expansion(column_view, NT_EXPAND_HORIZONTAL | NT_EXPAND_VERTICAL);

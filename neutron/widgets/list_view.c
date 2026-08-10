@@ -131,7 +131,7 @@ nt_widget_t *nt_list_view_create() {
     nt_style_set_padding_all(&list_view->style, 1);
     nt_style_set_border_thickness(&list_view->style, 1);
     nt_style_set_border_color(&list_view->style, NT_COLOR(170,170,170,255));
-    nt_style_set_border_gradient(&list_view->style, NT_BORDER_GRADIENT_NONE);
+    nt_style_set_border_gradient(&list_view->style, NT_STYLE_GRADIENT_NONE);
     nt_style_set_border_rounded(&list_view->style, 2);
     return list_view;
 }
